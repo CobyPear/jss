@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { GraphQLRequestClient } from '@sitecore-jss/sitecore-jss';
 import { StaticPath } from '../sharedTypes/sitemap';
+import { debugSitemap as debug } from '../debug';
 
 export type GraphQLSitemapServiceConfig = {
   /**
@@ -143,6 +144,7 @@ export class GraphQLSitemapService {
     const getStaticPaths = async (locale: string): Promise<StaticPath[]> => {
       const query = this.getSitemapQuery(rootItemId, locale, formatSearchQuery);
 
+      debug('fetching sitemap data for %s', locale);
       const data = await this.createClient()
         .request<SearchResult>(query)
         .catch((error) => {
@@ -203,6 +205,7 @@ export class GraphQLSitemapService {
   private async getRootItemId(rootItemPath: string): Promise<string | undefined> {
     const query = this.getRootItemIdQuery(rootItemPath);
 
+    debug('fetching root item id for %s', rootItemPath);
     const data = await this.createClient()
       .request<{ item: { id: string } }>(query)
       .catch((error) => {
